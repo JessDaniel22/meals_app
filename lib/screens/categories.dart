@@ -6,11 +6,15 @@ import 'package:meals_app/models/category.dart';
 import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/widgets/grid_items.dart';
 
+import '../models/meal.dart';
+
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
+  const CategoriesScreen({super.key, required this.availableMeals});
+
+  final List<Meal> availableMeals;
 
   void _selectCategory(BuildContext context, Category category) {
-    final filteredMeals = meals
+    final filteredMeals = availableMeals
         .where((meal) => meal.categories.contains(category.id))
         .toList(); //filtering meals
 
@@ -18,8 +22,10 @@ class CategoriesScreen extends StatelessWidget {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  MealsScreen(title: category.title, meals: filteredMeals)));
+              builder: (context) => MealsScreen(
+                    title: category.title,
+                    meals: filteredMeals,
+                  )));
     } else {
       _selectEmptyCategory(context);
     }
@@ -48,37 +54,23 @@ class CategoriesScreen extends StatelessWidget {
   @override
   Widget build(context) {
     var width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        centerTitle: false,
-        title: const Text('Categories'),
-        leading: IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.arrow_back_ios_new_rounded)),
-        actions: [
-          IconButton(
-              onPressed: () {}, icon: const Icon(Icons.more_vert_rounded))
-        ],
+    return GridView(
+      padding: const EdgeInsets.all(8),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: width < 800 ? 2 : 4,
+        childAspectRatio: 4 / 4,
+        crossAxisSpacing: width < 800 ? 16 : 20,
+        mainAxisSpacing: 20,
       ),
-      body: GridView(
-        padding: const EdgeInsets.all(8),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: width < 800 ? 2 : 4,
-          childAspectRatio: 4 / 4,
-          crossAxisSpacing: width < 800 ? 16 : 20,
-          mainAxisSpacing: 20,
-        ),
-        children: [
-          for (final category in availableCategories)
-            GridItems(
-              category: category,
-              onSelectCategory: () {
-                _selectCategory(context, category);
-              },
-            ),
-        ],
-      ),
+      children: [
+        for (final category in availableCategories)
+          GridItems(
+            category: category,
+            onSelectCategory: () {
+              _selectCategory(context, category);
+            },
+          ),
+      ],
     );
   }
 }

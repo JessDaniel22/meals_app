@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:meals_app/screens/categories.dart';
+
+import 'package:meals_app/screens/tabs.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 107, 0, 36),
 );
 void main() {
   runApp(
-    const App(),
+    const ProviderScope(
+      child: App(),
+    ),
   );
 }
 
@@ -20,12 +24,11 @@ class App extends StatelessWidget {
         useMaterial3: true,
         appBarTheme: const AppBarTheme().copyWith(
           foregroundColor: kColorScheme.primaryContainer,
-          backgroundColor: Colors.black,
         ),
         textTheme: GoogleFonts.latoTextTheme(),
         colorScheme: kColorScheme.copyWith(background: Colors.black),
       ),
-      home: const CategoriesScreen(),
+      home: const TabsScreen(),
     );
   }
 }
